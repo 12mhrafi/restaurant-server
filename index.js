@@ -109,12 +109,8 @@ async function run() {
       res.send(result)
     })
 
-
-
-
-
-
     // orderConfrim
+
     app.post("/confirmOrder", async (req, res) => {
       const orderData = req.body;
       const result = await orderCollection.insertOne(orderData);
