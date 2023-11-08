@@ -61,21 +61,22 @@ async function run() {
     })
 
     // update order 
+ 
     app.patch("/api/sortProducts/:id", async(req,res)=>{
-        const id = req.params.id;
-        console.log(id)
-        const updateId = {_id: new ObjectId(id)}
-        const options = {upsert: true} 
-        const order = req.body;
-        console.log(order.incOrder)
-        const updateOrder = {
-          $set: {
-            order: order.incOrder,
-          }
+      const id = req.params.id;
+      console.log(id)
+      const updateId = {_id: new ObjectId(id)}
+      const options = {upsert: true} 
+      const order = req.body;
+      console.log(order.incOrder)
+      const updateOrder = {
+        $set: {
+          order: order.incOrder,
         }
-        const result = await restaurantCollection.updateOne(updateId, updateOrder, options)
-        res.send(result)
-    })
+      }
+      const result = await restaurantCollection.updateOne(updateId, updateOrder, options)
+      res.send(result)
+  })
 
 
     app.get("/singleFoodDetails/:id", async (req, res) => {
