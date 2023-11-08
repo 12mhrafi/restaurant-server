@@ -40,11 +40,44 @@ async function run() {
       const result = await restaurantCollection.find(query).toArray();
       res.send(result);
     })
+    // pagination 
+    app.get("/paginationCount", async (req, res) => {
+      const count = await restaurantCollection.estimatedDocumentCount();
+      res.send({ count });
+    })
 
     app.get("/api/sortProducts", async (req, res) => {
-      const result = await restaurantCollection.find().sort({ order: -1 }).toArray();
-      res.send(result)
+        try {
+          const page = Number(req.query.page);
+          const size = Number(req.query.size)
+          const result = await restaurantCollection.find().sort({ order: -1 })
+          .skip(page * size)
+          .limit(size)
+          .toArray()
+          res.send(result)
+        } catch (error) {
+          console.log(error)
+        }
     })
+
+    // update order 
+    app.patch("/api/sortProducts/:id", async(req,res)=>{
+        const id = req.params.id;
+        console.log(id)
+        const updateId = {_id: new ObjectId(id)}
+        const options = {upsert: true} 
+        const order = req.body;
+        console.log(order.incOrder)
+        const updateOrder = {
+          $set: {
+            order: order.incOrder,
+          }
+        }
+        const result = await restaurantCollection.updateOne(updateId, updateOrder, options)
+        res.send(result)
+    })
+
+
     app.get("/singleFoodDetails/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
@@ -53,25 +86,27 @@ async function run() {
     })
 
     // { _id, image, FoodName, price, category, quantity, description } 
-    
-    app.put("/singleFoodDetails/:id", async(req,res)=>{
+
+    app.put("/singleFoodDetails/:id", async (req, res) => {
       const id = req.params.id;
-      const updatedId = {_id: new ObjectId(id)};
-      const options = {upsert: true}
+      const updatedId = { _id: new ObjectId(id) };
+      const options = { upsert: true }
       const product = req.body;
       const updateProduct = {
-        $set:{
-          FoodName:product.FoodName,
-          image:product.image,
-          price:product.price,
-          category:product.category,
-          quantity:product.quantity,
-          description:product.description
+        $set: {
+          FoodName: product.FoodName,
+          image: product.image,
+          price: product.price,
+          category: product.category,
+          quantity: product.quantity,
+          description: product.description
         }
       }
-      const result = await restaurantCollection.updateOne(updatedId ,updateProduct,options)
+      const result = await restaurantCollection.updateOne(updatedId, updateProduct, options)
       res.send(result)
     })
+
+
 
 
 
