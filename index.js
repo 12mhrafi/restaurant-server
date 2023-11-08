@@ -32,6 +32,7 @@ async function run() {
     })
 
     // get data by email
+ 
     app.get("/userAddedProducts", async (req, res) => {
       let query = {};
       if (req.query?.email) {
@@ -40,6 +41,7 @@ async function run() {
       const result = await restaurantCollection.find(query).toArray();
       res.send(result);
     })
+    
     // pagination 
     app.get("/paginationCount", async (req, res) => {
       const count = await restaurantCollection.estimatedDocumentCount();
