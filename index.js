@@ -41,7 +41,7 @@ async function run() {
       const result = await restaurantCollection.find(query).toArray();
       res.send(result);
     })
-    
+
     // pagination 
     app.get("/paginationCount", async (req, res) => {
       const count = await restaurantCollection.estimatedDocumentCount();
@@ -146,7 +146,6 @@ async function run() {
 }
 run().catch(console.dir);
 //   mongodb end
-
 
 app.get("/", (req, res) => {
   res.send("Server is running");
